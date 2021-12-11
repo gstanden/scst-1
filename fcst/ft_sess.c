@@ -504,25 +504,12 @@ static void ft_prlo(struct fc_rport_priv *rdata)
 	rdata->prli_count--;
 }
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 36) && !defined(RHEL_MAJOR)
-static inline u32 fc_frame_sid(const struct fc_frame *fp)
-{
-	return ntoh24(fc_frame_header_get(fp)->fh_s_id);
-}
-#endif
-
 /*
  * Handle incoming FCP request.
  * Caller has verified that the frame is type FCP.
  * Note that this may be called directly from the softirq context.
  */
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 36) \
-	&& (!defined(RHEL_MAJOR) || RHEL_MAJOR -0 <= 5)
-static void ft_recv(struct fc_lport *lport, struct fc_seq *sp,
-		    struct fc_frame *fp)
-#else
 static void ft_recv(struct fc_lport *lport, struct fc_frame *fp)
-#endif
 {
 	struct ft_sess *sess;
 	u32 sid = fc_frame_sid(fp);
@@ -532,10 +519,6 @@ static void ft_recv(struct fc_lport *lport, struct fc_frame *fp)
 	sess = ft_sess_get(lport, sid);
 	if (!sess) {
 		FT_SESS_DBG("sid %x sess lookup failed\n", sid);
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 36) \
-	&& (!defined(RHEL_MAJOR) || RHEL_MAJOR -0 <= 5)
-		lport->tt.exch_done(sp);
-#endif
 		/* TBD XXX - if FCP_CMND, send LOGO */
 		fc_frame_free(fp);
 		return;
