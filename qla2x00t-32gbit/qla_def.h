@@ -28,14 +28,10 @@
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 1, 0)
 #include <linux/bsg-lib.h>	/* struct bsg_job */
 #endif
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 34)
 /*
  * See also commit 5db53f3e80de ("[LogFS] add new flash file system") # v2.6.34.
  */
 #include <linux/btree.h>
-#else
-#include "btree-backport.h"
-#endif
 
 #include <scsi/scsi.h>
 #include <scsi/scsi_host.h>
