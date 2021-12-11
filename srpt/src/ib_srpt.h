@@ -445,9 +445,7 @@ struct srpt_rdma_ch {
 	struct list_head	list;
 	struct list_head	cmd_wait_list;
 	uint16_t		pkey;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 20) || defined(RHEL_RELEASE_CODE)
 	u16			comp_vector;
-#endif
 	bool			using_rdma_cm;
 	bool			processing_wait_list;
 	struct scst_session	*sess;
